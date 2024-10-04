@@ -24,7 +24,7 @@ export const RegisterForm = () => {
   //This code initializes a form using the useForm hook, applying a validation schema (LoginSchema) with Zod and setting default values for the email and password fields.
 
   const form = useForm({
-    resolver: zodResolver(RegisterSchema()),
+    resolver: zodResolver(RegisterSchema),
     defaultValues: {
       email: "",
       password: "",

@@ -25,7 +25,7 @@ export const LoginForm = () => {
   //This code initializes a form using the useForm hook, applying a validation schema (LoginSchema) with Zod and setting default values for the email and password fields.
 
   const form = useForm({
-    resolver: zodResolver(LoginSchema()),
+    resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -44,8 +44,15 @@ export const LoginForm = () => {
     
     startTransition(() => {
       login(values).then((data) => {
-        setError(data.error);
-        setSuccess(data.sucess);
+        if (data?.error) {
+            form.reset();
+            setError(data?.error);
+          }
+
+          if (data?.success) {
+            form.reset();
+            setSuccess(data?.success);
+          }
       });
     });
   };
