@@ -32,32 +32,4 @@ export const login = async (values) => {
     }
     throw error;
   }
-  
-  // console.log("Validated email and password:", email, password);
-
-  // try {
-  //   console.log("Calling signIn function...");
-  //   await signIn("credentials", {
-  //     email,
-  //     password,
-  //     redirectTo: DEFAULT_LOGIN_REDIRECT,
-  //   });
-  // } catch (error) {
-  //   console.error("Error in signIn function:", error);
-  //   if (error instanceof AuthError) {
-  //     switch (error.type) {
-  //       case "CredentialsSignin":
-  //         console.error("Invalid credentials!");
-  //         return { error: "Invalid credentials!" };
-  //       default:
-  //         console.error(`Unknown AuthError type: ${error.type}`);
-  //         return { error: "Something went wrong!" };
-  //     }
-  //   } else {
-  //     console.error(`Error: ${error.message}`);
-  //     throw error;
-  //   }
-  // }
-
-
 };

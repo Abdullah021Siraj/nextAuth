@@ -1,4 +1,3 @@
-
 import { auth, signOut } from "../../../auth"
 
 async function Settings() {

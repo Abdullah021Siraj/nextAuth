@@ -47,6 +47,7 @@ export const LoginForm = () => {
         if (data?.error) {
             form.reset();
             setError(data?.error);
+             
           }
 
           if (data?.success) {
@@ -104,7 +105,7 @@ export const LoginForm = () => {
               )}
             />
           </div>
-          <FormError message={error} />
+          <FormError message={error } />
           <FormSucess message={success} />
           <Button type="submit" disabled={isPending} className="w-full">
             Login
