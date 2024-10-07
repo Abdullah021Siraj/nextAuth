@@ -21,9 +21,15 @@ import { login } from "../../../actions/login";
 import { useTransition, useState } from "react";
 import { FormError } from "../form-error";
 import { FormSucess } from "../form-success";
+import { useSearchParams } from "next/navigation";
 export const LoginForm = () => {
-  //This code initializes a form using the useForm hook, applying a validation schema (LoginSchema) with Zod and setting default values for the email and password fields.
+  const searchParams = useSearchParams();
+  const urlError =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "Email already in use with different provider!"
+      : "";
 
+  //This code initializes a form using the useForm hook, applying a validation schema (LoginSchema) with Zod and setting default values for the email and password fields.
   const form = useForm({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -38,22 +44,20 @@ export const LoginForm = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const onSubmit = (values) => {
-    
-    setError('');
-    setSuccess('');
-    
+    setError("");
+    setSuccess("");
+
     startTransition(() => {
       login(values).then((data) => {
         if (data?.error) {
-            form.reset();
-            setError(data?.error);
-             
-          }
+          form.reset();
+          setError(data?.error);
+        }
 
-          if (data?.success) {
-            form.reset();
-            setSuccess(data?.success);
-          }
+        if (data?.success) {
+          form.reset();
+          setSuccess(data?.success);
+        }
       });
     });
   };
@@ -105,7 +109,7 @@ export const LoginForm = () => {
               )}
             />
           </div>
-          <FormError message={error } />
+          <FormError message={error || urlError} />
           <FormSucess message={success} />
           <Button type="submit" disabled={isPending} className="w-full">
             Login
