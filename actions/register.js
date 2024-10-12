@@ -1,10 +1,11 @@
 "use server";
 
 import { RegisterSchema } from "@/schemas";
-import * as z from "zod";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { getUserByEmail } from "../data/user";
+import { generateVerificationToken } from "@/lib/token";
+import { sendVerificationEmail } from "@/lib/mail";
 //This directive indicates that the function can run on the server, enabling server-side actions.
 
 export const register = async (values) => {
@@ -31,7 +32,12 @@ export const register = async (values) => {
     },
   });
 
-  //TODO: Send verification email token
+  const verificationToken = await generateVerificationToken(email);
 
-  return { sucess: "User Created! " };
+  await sendVerificationEmail(
+    verificationToken.email,
+    verificationToken.token
+  )
+
+  return {success: 'Confirmation Email Sent!'}
 };

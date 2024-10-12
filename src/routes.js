@@ -2,6 +2,7 @@
 
 export const publicRoutes = [
     '/',
+    '/auth/new-verification',
 ]
 
 // these routes will redirect login user to /settings

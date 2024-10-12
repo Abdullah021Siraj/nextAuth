@@ -20,7 +20,7 @@ import { Button } from "../ui/button";
 import { login } from "../../../actions/login";
 import { useTransition, useState } from "react";
 import { FormError } from "../form-error";
-import { FormSucess } from "../form-success";
+import { FormSuccess } from "../form-success";
 import { useSearchParams } from "next/navigation";
 export const LoginForm = () => {
   const searchParams = useSearchParams();
@@ -110,7 +110,7 @@ export const LoginForm = () => {
             />
           </div>
           <FormError message={error || urlError} />
-          <FormSucess message={success} />
+          <FormSuccess message={success} />
           <Button type="submit" disabled={isPending} className="w-full">
             Login
           </Button>

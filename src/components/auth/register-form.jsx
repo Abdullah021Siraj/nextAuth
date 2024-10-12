@@ -18,7 +18,7 @@ import { RegisterSchema } from "@/schemas";
 import { Button } from "../ui/button";
 import { register } from "../../../actions/register";
 import { useTransition, useState } from "react";
-import { FormSucess } from "../form-success";
+import { FormSuccess } from "../form-success";
 import { FormError } from "../form-error";
 export const RegisterForm = () => {
   //This code initializes a form using the useForm hook, applying a validation schema (LoginSchema) with Zod and setting default values for the email and password fields.
@@ -45,7 +45,7 @@ export const RegisterForm = () => {
     startTransition(() => {
       register(values).then((data) => {
         setError(data.error);
-        setSuccess(data.sucess);
+        setSuccess(data.success);
       });
     });
   };
@@ -115,7 +115,7 @@ export const RegisterForm = () => {
               )}
             />
           </div>
-              <FormSucess message={success} />
+              <FormSuccess message={success} />
               <FormError message={error} />
           <Button type="submit" disabled={isPending} className="w-full">
             Create an Account
