@@ -10,7 +10,8 @@ export const publicRoutes = [
 export const authRoutes = [
     '/auth/login',
     '/auth/register',
-    '/auth/error'
+    '/auth/error',
+    '/auth/reset'
 ]
 
 //routes for API authentication purposes
