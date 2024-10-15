@@ -1,0 +1,13 @@
+model TwoFactorConfirmation {
+  id String @id @default(cuid())
+
+  userId String 
+  user User @relation(fields:[userId], references: [id], onDelete: Cascade)
+
+  @unique([userId])
+}
+
+in the following we have 
+-> fields:[userId] means that it's a foreign key 
+-> references: [id] taking reference from User model of id 
+-> onDelete: Cascade means that if user gets deleted the twofactor also gets deleted

@@ -8,9 +8,6 @@ import { getUserByEmail } from "../data/user";
 import { generateVerificationToken } from "@/lib/token";
 import { sendVerificationEmail } from "@/lib/mail";
 
-
-//This directive indicates that the function can run on the server, enabling server-side actions.
-
 export const login = async (values) => {
   const validateFields = LoginSchema.safeParse(values);
 
@@ -35,8 +32,6 @@ export const login = async (values) => {
 
     return {success: 'Confirmation email sent!'}
   }
-
-  
 
   try {
     await signIn("credentials", {
