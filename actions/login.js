@@ -5,9 +5,9 @@ import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
 import { getUserByEmail } from "../data/user";
-import { generateVerificationToken } from "@/lib/token";
-import { sendVerificationEmail } from "@/lib/mail";
 import bcrypt from "bcryptjs";
+import { sendVerificationEmail } from "@/lib/mail";
+import { generateVerificationToken, generateTwoFactorToken } from "@/lib/token";
 
 export const login = async (values) => {
   const validateFields = LoginSchema.safeParse(values);
@@ -16,7 +16,7 @@ export const login = async (values) => {
     return { error: "Invalid fields" };
   }
 
-  const { email, password } = validateFields.data;
+  const { email, password, code } = validateFields.data;
   const existingUser = await getUserByEmail(email);
 
   if (!existingUser || !existingUser.email || !existingUser.password) {
@@ -76,3 +76,4 @@ export const login = async (values) => {
     }
   }
 };
+
