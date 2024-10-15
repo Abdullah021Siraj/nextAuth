@@ -11,8 +11,7 @@ export const authRoutes = [
     '/auth/login',
     '/auth/register',
     '/auth/error',
-    '/auth/reset',
-    '/auth/new-password'
+    '/auth/reset'
 ]
 
 //routes for API authentication purposes
