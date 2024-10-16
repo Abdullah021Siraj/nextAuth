@@ -8,72 +8,168 @@ import { getUserByEmail } from "../data/user";
 import bcrypt from "bcryptjs";
 import { sendVerificationEmail } from "@/lib/mail";
 import { generateVerificationToken, generateTwoFactorToken } from "@/lib/token";
+import { sendTwoFactorTokenEmail } from "@/lib/mail";
+import { db } from "@/lib/db";
+import { getTwoFactorTokenByEmail } from "../data/two-factor-token";
+import { getTwoFactorConfirmationByUserId } from "../data/two-factor-confirmation";
+
+// export const login = async (values) => {
+//   const validateFields = LoginSchema.safeParse(values);
+
+//   if (!validateFields.success) {
+//     return { error: "Invalid fields" };
+//   }
+
+//   const { email, password, code } = validateFields.data;
+//   const existingUser = await getUserByEmail(email);
+
+//   if (!existingUser || !existingUser.email || !existingUser.password) {
+//     return { error: "Email does not exist!" };
+//   }
+
+//   // If email is not verified
+//   if (!existingUser.emailVerified) {
+//     const passwordsMatch = await bcrypt.compare(
+//       password,
+//       existingUser.password
+//     );
+
+//     if (passwordsMatch) {
+//       const verificationToken = await generateVerificationToken(
+//         existingUser.email
+//       );
+//       await sendVerificationEmail(
+//         verificationToken.email,
+//         verificationToken.token
+//       );
+
+//       return { success: "Confirmation email sent!" };
+//     } else {
+//       return { error: "Invalid credentials!" };
+//     }
+//   }
+//   // If the email is verified and the password matches
+//   else if (existingUser.emailVerified) {
+//     const passwordsMatch = await bcrypt.compare(
+//       password,
+//       existingUser.password
+//     );
+
+//     if (passwordsMatch) {
+//       try {
+//         await signIn("credentials", {
+//           email,
+//           password,
+//           redirectTo: DEFAULT_LOGIN_REDIRECT,
+//         });
+
+//         return { success: "Logged in successfully!" };
+//       } catch (error) {
+//         if (error instanceof AuthError) {
+//           switch (error.type) {
+//             case "CredentialsSignin":
+//               return { error: "Invalid credentials!" };
+//             default:
+//               return { error: "Something went wrong!" };
+//           }
+//         }
+//         throw error;
+//       }
+//     } else {
+//       return { error: "Invalid credentials!" };
+//     }
+//   }
+// };
 
 export const login = async (values) => {
-  const validateFields = LoginSchema.safeParse(values);
+  const validatedFields = LoginSchema.safeParse(values);
 
-  if (!validateFields.success) {
-    return { error: "Invalid fields" };
+  if (!validatedFields.success) {
+    return { error: "Invalid fields!" };
   }
 
-  const { email, password, code } = validateFields.data;
+  const { email, password, code } = validatedFields.data;
+
   const existingUser = await getUserByEmail(email);
 
   if (!existingUser || !existingUser.email || !existingUser.password) {
     return { error: "Email does not exist!" };
   }
 
-  // If email is not verified
   if (!existingUser.emailVerified) {
-    const passwordsMatch = await bcrypt.compare(
-      password,
-      existingUser.password
+    const verificationToken = await generateVerificationToken(
+      existingUser.email
     );
 
-    if (passwordsMatch) {
-      const verificationToken = await generateVerificationToken(
-        existingUser.email
-      );
-      await sendVerificationEmail(
-        verificationToken.email,
-        verificationToken.token
+    await sendVerificationEmail(
+      verificationToken.email,
+      verificationToken.token
+    );
+
+    return { success: "Confirmation email sent!" };
+  }
+
+  if (existingUser.isTwoFactorEnabled && existingUser.email) {
+    if (code) {
+      const twoFactorToken = await getTwoFactorTokenByEmail(existingUser.email);
+
+      if (!twoFactorToken) {
+        return { error: "Invalid code!" };
+      }
+
+      if (twoFactorToken.token !== code) {
+        return { error: "Invalid code!" };
+      }
+
+      const hasExpired = new Date(twoFactorToken.expires) < new Date();
+
+      if (hasExpired) {
+        return { error: "Code expired!" };
+      }
+
+      await db.twoFactorToken.delete({
+        where: { id: twoFactorToken.id },
+      });
+
+      const existingConfirmation = await getTwoFactorConfirmationByUserId(
+        existingUser.id
       );
 
-      return { success: "Confirmation email sent!" };
+      if (existingConfirmation) {
+        await db.twoFactorConfirmation.delete({
+          where: { id: existingConfirmation.id },
+        });
+      }
+
+      await db.twoFactorConfirmation.create({
+        data: {
+          userId: existingUser.id,
+        },
+      });
     } else {
-      return { error: "Invalid credentials!" };
+      const twoFactorToken = await generateTwoFactorToken(existingUser.email);
+      await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token);
+
+      return { twoFactor: true };
     }
   }
-  // If the email is verified and the password matches
-  else if (existingUser.emailVerified) {
-    const passwordsMatch = await bcrypt.compare(
+
+  try {
+    await signIn("credentials", {
+      email,
       password,
-      existingUser.password
-    );
-
-    if (passwordsMatch) {
-      try {
-        await signIn("credentials", {
-          email,
-          password,
-          redirectTo: DEFAULT_LOGIN_REDIRECT,
-        });
-
-        return { success: "Logged in successfully!" };
-      } catch (error) {
-        if (error instanceof AuthError) {
-          switch (error.type) {
-            case "CredentialsSignin":
-              return { error: "Invalid credentials!" };
-            default:
-              return { error: "Something went wrong!" };
-          }
-        }
-        throw error;
+      redirectTo: DEFAULT_LOGIN_REDIRECT,
+    });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return { error: "Invalid credentials!" };
+        default:
+          return { error: "Something went wrong!" };
       }
-    } else {
-      return { error: "Invalid credentials!" };
     }
+
+    throw error;
   }
 };
-
