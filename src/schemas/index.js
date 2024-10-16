@@ -3,6 +3,7 @@ import * as z from "zod";
 const LoginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1, { message: "Minimum 2 character are required" }),
+  code: z.optional(z.string())
 });
 export { LoginSchema };
 
