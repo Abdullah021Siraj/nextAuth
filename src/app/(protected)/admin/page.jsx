@@ -1,8 +1,15 @@
 'use client'
 
-function AdminPage() {
+import { useCurrentRole } from "../../../../hooks/use-current-role"
+
+const AdminPage = () => {
+
+  const role = useCurrentRole();
+
   return (
-    <div>AdminPage</div>
+    <div>
+      Current Role: {role}
+    </div>
   )
 }
 
