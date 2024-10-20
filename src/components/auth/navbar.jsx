@@ -11,7 +11,7 @@ const Navbar = () => {
   const pathname = usePathname();
 
   return (
-  <nav className="bg-secondary flex justify-between items-center p-4 rounded-xl shadow-sm mx-auto my-4 max-w-[600px] w-full">
+  <nav className="bg-white flex justify-between items-center p-4 rounded-xl shadow-sm mx-auto my-4 max-w-[600px] w-full">
     <div className="flex flex-wrap gap-x-2 gap-y-2">
       <Button asChild variant={pathname === "/server" ? "default" : "outline"}>
         <Link href="/server">Server</Link>

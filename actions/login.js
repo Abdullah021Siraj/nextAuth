@@ -13,75 +13,7 @@ import { db } from "@/lib/db";
 import { getTwoFactorTokenByEmail } from "../data/two-factor-token";
 import { getTwoFactorConfirmationByUserId } from "../data/two-factor-confirmation";
 
-// export const login = async (values) => {
-//   const validateFields = LoginSchema.safeParse(values);
-
-//   if (!validateFields.success) {
-//     return { error: "Invalid fields" };
-//   }
-
-//   const { email, password, code } = validateFields.data;
-//   const existingUser = await getUserByEmail(email);
-
-//   if (!existingUser || !existingUser.email || !existingUser.password) {
-//     return { error: "Email does not exist!" };
-//   }
-
-//   // If email is not verified
-//   if (!existingUser.emailVerified) {
-//     const passwordsMatch = await bcrypt.compare(
-//       password,
-//       existingUser.password
-//     );
-
-//     if (passwordsMatch) {
-//       const verificationToken = await generateVerificationToken(
-//         existingUser.email
-//       );
-//       await sendVerificationEmail(
-//         verificationToken.email,
-//         verificationToken.token
-//       );
-
-//       return { success: "Confirmation email sent!" };
-//     } else {
-//       return { error: "Invalid credentials!" };
-//     }
-//   }
-//   // If the email is verified and the password matches
-//   else if (existingUser.emailVerified) {
-//     const passwordsMatch = await bcrypt.compare(
-//       password,
-//       existingUser.password
-//     );
-
-//     if (passwordsMatch) {
-//       try {
-//         await signIn("credentials", {
-//           email,
-//           password,
-//           redirectTo: DEFAULT_LOGIN_REDIRECT,
-//         });
-
-//         return { success: "Logged in successfully!" };
-//       } catch (error) {
-//         if (error instanceof AuthError) {
-//           switch (error.type) {
-//             case "CredentialsSignin":
-//               return { error: "Invalid credentials!" };
-//             default:
-//               return { error: "Something went wrong!" };
-//           }
-//         }
-//         throw error;
-//       }
-//     } else {
-//       return { error: "Invalid credentials!" };
-//     }
-//   }
-// };
-
-export const login = async (values) => {
+export const login = async (values, callbackUrl) => {
   const validatedFields = LoginSchema.safeParse(values);
 
   if (!validatedFields.success) {
@@ -106,7 +38,13 @@ export const login = async (values) => {
       verificationToken.token
     );
 
-    return { success: "Confirmation email sent!" };
+    return { success: "Confirmation email Sent!" };
+  }
+
+  const passwordMatch = await bcrypt.compare(password, existingUser.password);
+
+  if (!passwordMatch) {
+    return { error: "Invalid Credentials!" };
   }
 
   if (existingUser.isTwoFactorEnabled && existingUser.email) {
@@ -150,7 +88,7 @@ export const login = async (values) => {
       const twoFactorToken = await generateTwoFactorToken(existingUser.email);
       await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token);
 
-      return { twoFactor: true };
+      return { twoFactor: true};
     }
   }
 
@@ -158,8 +96,10 @@ export const login = async (values) => {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
     });
+
+    // return { success: "Login Sucess!" };
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
