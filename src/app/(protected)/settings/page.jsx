@@ -36,6 +36,9 @@ import { FormError } from "@/components/form-error";
 import { UserRole } from "@prisma/client";
 
 const SettingsPage = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+
   const user = useCurrentUser();
   const [error, setError] = useState();
   const [success, setSuccess] = useState();
@@ -125,12 +128,19 @@ const SettingsPage = () => {
                         <FormControl>
                           <Input
                             {...field}
-                            type="password"
+                            type={showOldPassword ? "text" : "password"}
                             placeholder="******"
                             disabled={isPending}
                           />
                         </FormControl>
                         <FormMessage />
+                        <button
+                          type="button"
+                          className="flex text-xs hover:underline bg-white"
+                          onClick={() => setShowOldPassword(!showOldPassword)}
+                        >
+                          {showOldPassword ? "Hide password" : "Show password"}
+                        </button>
                       </FormItem>
                     )}
                   />
@@ -143,12 +153,19 @@ const SettingsPage = () => {
                         <FormControl>
                           <Input
                             {...field}
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             placeholder="******"
                             disabled={isPending}
                           />
                         </FormControl>
                         <FormMessage />
+                        <button
+                          type="button"
+                          className="flex text-xs hover:underline bg-white"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? "Hide password" : "Show password"}
+                        </button>
                       </FormItem>
                     )}
                   />

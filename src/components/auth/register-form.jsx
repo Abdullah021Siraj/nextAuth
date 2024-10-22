@@ -28,20 +28,21 @@ export const RegisterForm = () => {
     defaultValues: {
       email: "",
       password: "",
-      name: ""
+      name: "",
     },
   });
 
   //The useTransition hook in React allows you to manage transitions between UI states by marking updates as "transitions"
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const onSubmit = (values) => {
-    
-    setError('');
-    setSuccess('');
-    
+    setError("");
+    setSuccess("");
+
     startTransition(() => {
       register(values).then((data) => {
         setError(data.error);
@@ -107,16 +108,23 @@ export const RegisterForm = () => {
                       {...field}
                       disabled={isPending}
                       placeholder="*********"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                     />
                   </FormControl>
+                  <button
+                    type="button"
+                    className="flex text-xs hover:underline bg-white"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? "Hide password" : "Show password"}
+                  </button>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-              <FormSuccess message={success} />
-              <FormError message={error} />
+          <FormSuccess message={success} />
+          <FormError message={error} />
           <Button type="submit" disabled={isPending} className="w-full">
             Create an Account
           </Button>

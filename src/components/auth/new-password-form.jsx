@@ -29,6 +29,8 @@ export const NewPasswordForm = () => {
     },
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -75,9 +77,16 @@ export const NewPasswordForm = () => {
                       {...field}
                       disabled={isPending}
                       placeholder="******"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                     />
                   </FormControl>
+                  <button
+                    type="button"
+                    className="flex text-xs hover:underline bg-white"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? "Hide password" : "Show password"}
+                  </button>
                   <FormMessage />
                 </FormItem>
               )}

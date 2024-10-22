@@ -22,6 +22,9 @@ import { FormSuccess } from "../form-success";
 import { useSearchParams } from "next/navigation";
 
 export const LoginForm = () => {
+
+  const [showPassword, setShowPassword] = useState(false);
+
   const [showTwoFactor, setShowTwoFactor] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -133,9 +136,16 @@ export const LoginForm = () => {
                           {...field}
                           disabled={isPending}
                           placeholder="******"
-                          type="password"
+                          type={showPassword ? "text" : "password"}
                         />
                       </FormControl>
+                      <button
+                          type="button"
+                          className="flex text-xs hover:underline bg-white"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? "Hide password" : "Show password"}
+                        </button>
                       <Button
                         size="sm"
                         variant="link"

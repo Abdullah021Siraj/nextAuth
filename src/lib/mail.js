@@ -10,8 +10,17 @@ export const sendPasswordResetEmail = async (email, token) => {
   await resend.emails.send({
     from: "onboarding@resend.dev",
     to: email,
-    subject: "Reset your password",
-    html: `<p>Click <a href="${resetLink}">here</a> to reset password.</p>`,
+    subject: "Reset Your Password and Get Back to Your Account",
+    html: `
+      <h2>Password Reset Request</h2>
+      <p>Hi there!</p>
+      <p>We received a request to reset your password. If you didn't make this request, please ignore this email.</p>
+      <p>To reset your password, click the link below:</p>
+      <p><a href="${resetLink}" style="background-color: #007bff; color: #ffffff; padding: 10px 20px; border-radius: 5px; text-decoration: none;">Reset Password</a></p>
+      <p>If you have any issues, feel free to reply to this email or contact our support team.</p>
+      <p>Best regards,</p>
+      <p>Team</p>
+    `,
   });
 };
 
@@ -21,8 +30,16 @@ export const sendVerificationEmail = async (email, token) => {
   await resend.emails.send({
     from: "onboarding@resend.dev",
     to: email,
-    subject: "Confirm your email",
-    html: `<p>Click <a href="${confirmLink}">here</a> to confirm email.</p>`,
+    subject: "Verify Your Email Address and Unlock Your Account",
+    html: `
+      <h2>Email Verification</h2>
+      <p>Hi there!</p>
+      <p>We're excited to have you on board! To complete your account setup, please verify your email address by clicking the link below:</p>
+      <p><a href="${confirmLink}" style="background-color: #007bff; color: #ffffff; padding: 10px 20px; border-radius: 5px; text-decoration: none;">Verify Email</a></p>
+      <p>If you have any issues, feel free to reply to this email or contact our support team.</p>
+      <p>Best regards,</p>
+      <p>Team</p>
+    `,
   });
 };
 
@@ -30,7 +47,15 @@ export const sendTwoFactorTokenEmail = async (email, token) => {
   await resend.emails.send({
     from: "onboarding@resend.dev",
     to: email,
-    subject: "2FA Code",
-    html: `<p>Your 2FA code: ${token}</p>`,
+    subject: "Your 2FA Code for Secure Login",
+    html: `
+      <h2>2-Factor Authentication Code</h2>
+      <p>Hi there!</p>
+      <p>To complete your login, please enter the 2FA code below:</p>
+      <p style="font-size: 20px; font-weight: bold;">${token}</p>
+      <p>If you have any issues, feel free to reply to this email or contact our support team.</p>
+      <p>Best regards,</p>
+      <p>Team</p>
+    `,
   });
 };

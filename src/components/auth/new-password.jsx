@@ -37,6 +37,10 @@ export const NewPasswordForm = () => {
   const token = searchParams.get("token");
 
   const onSubmit = (values) => {
+
+const [showPassword, setShowPassword] = useState(false);
+
+
     setError("");
     setSuccess("");
 
@@ -75,9 +79,16 @@ export const NewPasswordForm = () => {
                       {...field}
                       disabled={isPending}
                       placeholder="******"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                     />
                   </FormControl>
+                  <button
+                          type="button"
+                          className="flex text-xs hover:underline bg-white"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? "Hide password" : "Show password"}
+                        </button>
                   <FormMessage />
                 </FormItem>
               )}
