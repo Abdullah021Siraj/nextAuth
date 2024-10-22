@@ -24,7 +24,7 @@ export default function Home() {
           A simple Authentication service
         </p>
         <div className="flex items-center justify-center">
-          <LoginButton>
+          <LoginButton mode="modal" asChild>
             <Button variant="secondary" size="lg">
               Sign In
             </Button>
