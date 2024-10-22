@@ -21,7 +21,7 @@ export default function Home() {
           🔐 Auth
         </h1>
         <p className="text-white text-large text-center">
-          A simple Authentication service
+          Authentication Service
         </p>
         <div className="flex items-center justify-center">
           <LoginButton mode="modal" asChild>
